@@ -451,6 +451,7 @@ Variant VariantUtilityFunctions::lerp(const Variant &from, const Variant &to, do
 		case Variant::VECTOR3:
 		case Variant::VECTOR4:
 		case Variant::QUATERNION:
+		case Variant::POSE:
 		case Variant::BASIS:
 		case Variant::COLOR:
 		case Variant::TRANSFORM2D:
@@ -460,7 +461,7 @@ Variant VariantUtilityFunctions::lerp(const Variant &from, const Variant &to, do
 			r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
 			r_error.argument = 0;
 			r_error.expected = Variant::NIL;
-			return R"(Argument "from" must be "int", "float", "Vector2", "Vector3", "Vector4", "Color", "Quaternion", "Basis", "Transform2D", or "Transform3D".)";
+			return R"(Argument "from" must be "int", "float", "Vector2", "Vector3", "Vector4", "Color", "Quaternion", "Pose", "Basis", "Transform2D", or "Transform3D".)";
 	}
 
 	if (from.get_type() != to.get_type()) {
@@ -489,6 +490,11 @@ Variant VariantUtilityFunctions::lerp(const Variant &from, const Variant &to, do
 		} break;
 		case Variant::QUATERNION: {
 			return VariantInternalAccessor<Quaternion>::get(&from).slerp(VariantInternalAccessor<Quaternion>::get(&to), weight);
+		} break;
+		case Variant::POSE: {
+			const Pose &from_pose = VariantInternalAccessor<Pose>::get(&from);
+			const Pose &to_pose = VariantInternalAccessor<Pose>::get(&to);
+			return Pose(from_pose.rotation.slerp(to_pose.rotation, weight), from_pose.translation.lerp(to_pose.translation, weight));
 		} break;
 		case Variant::BASIS: {
 			return VariantInternalAccessor<Basis>::get(&from).slerp(VariantInternalAccessor<Basis>::get(&to), weight);
@@ -881,6 +887,8 @@ Variant VariantUtilityFunctions::type_convert(const Variant &p_variant, const Va
 			return p_variant.operator Plane();
 		case Variant::Type::QUATERNION:
 			return p_variant.operator Quaternion();
+		case Variant::Type::POSE:
+			return p_variant.operator Pose();
 		case Variant::Type::AABB:
 			return p_variant.operator ::AABB();
 		case Variant::Type::BASIS:

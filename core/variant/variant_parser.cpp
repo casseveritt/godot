@@ -852,6 +852,19 @@ Error VariantParser::parse_value(Token &token, Variant &value, Stream *p_stream,
 			}
 
 			value = Quaternion(args[0], args[1], args[2], args[3]);
+		} else if (id == "Pose") {
+			Vector<real_t> args;
+			Error err = _parse_construct<real_t>(p_stream, args, line, r_err_str);
+			if (err) {
+				return err;
+			}
+
+			if (args.size() != 7) {
+				r_err_str = "Expected 7 arguments for constructor";
+				return ERR_PARSE_ERROR;
+			}
+
+			value = Pose(Quaternion(args[0], args[1], args[2], args[3]), Vector3(args[4], args[5], args[6]));
 		} else if (id == "AABB" || id == "Rect3") {
 			Vector<real_t> args;
 			Error err = _parse_construct<real_t>(p_stream, args, line, r_err_str);
@@ -2092,6 +2105,11 @@ Error VariantWriter::write(const Variant &p_variant, StoreStringFunc p_store_str
 			}
 
 			p_store_string_func(p_store_string_ud, s + ")");
+		} break;
+		case Variant::POSE: {
+			String s = "Pose(";
+			Pose p = p_variant;
+			p_store_string_func(p_store_string_ud, "Pose(" + rtos_fix(p.rotation.x, p_compat) + ", " + rtos_fix(p.rotation.y, p_compat) + ", " + rtos_fix(p.rotation.z, p_compat) + ", " + rtos_fix(p.rotation.w, p_compat) + ", " + rtos_fix(p.translation.x, p_compat) + ", " + rtos_fix(p.translation.y, p_compat) + ", " + rtos_fix(p.translation.z, p_compat) + ")");
 		} break;
 		case Variant::BASIS: {
 			String s = "Basis(";

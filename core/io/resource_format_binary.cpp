@@ -86,6 +86,7 @@ enum {
 	VARIANT_VECTOR4I = 51,
 	VARIANT_PROJECTION = 52,
 	VARIANT_PACKED_VECTOR4_ARRAY = 53,
+	VARIANT_POSE = 54,
 	OBJECT_EMPTY = 0,
 	OBJECT_EXTERNAL_RESOURCE = 1,
 	OBJECT_INTERNAL_RESOURCE = 2,
@@ -272,6 +273,18 @@ Error ResourceLoaderBinary::parse_variant(Variant &r_v) {
 			v.y = f->get_real();
 			v.z = f->get_real();
 			v.w = f->get_real();
+			r_v = v;
+
+		} break;
+		case VARIANT_POSE: {
+			Pose v;
+			v.rotation.x = f->get_real();
+			v.rotation.y = f->get_real();
+			v.rotation.z = f->get_real();
+			v.rotation.w = f->get_real();
+			v.translation.x = f->get_real();
+			v.translation.y = f->get_real();
+			v.translation.z = f->get_real();
 			r_v = v;
 
 		} break;
@@ -1738,6 +1751,18 @@ void ResourceFormatSaverBinaryInstance::write_variant(Ref<FileAccess> f, const V
 			f->store_real(val.y);
 			f->store_real(val.z);
 			f->store_real(val.w);
+
+		} break;
+		case Variant::POSE: {
+			f->store_32(VARIANT_POSE);
+			Pose val = p_property;
+			f->store_real(val.rotation.x);
+			f->store_real(val.rotation.y);
+			f->store_real(val.rotation.z);
+			f->store_real(val.rotation.w);
+			f->store_real(val.translation.x);
+			f->store_real(val.translation.y);
+			f->store_real(val.translation.z);
 
 		} break;
 		case Variant::AABB: {

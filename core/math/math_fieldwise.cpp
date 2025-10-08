@@ -151,6 +151,20 @@ Variant fieldwise_assign(const Variant &p_target, const Variant &p_source, const
 			return target;
 		}
 
+		case Variant::POSE: {
+			SETUP_TYPE(Pose)
+
+			/**/ TRY_TRANSFER_FIELD("rx", rotation.x)
+			else TRY_TRANSFER_FIELD("ry", rotation.y)
+			else TRY_TRANSFER_FIELD("rz", rotation.z)
+			else TRY_TRANSFER_FIELD("rw", rotation.w)
+			else TRY_TRANSFER_FIELD("tx", translation.x)
+			else TRY_TRANSFER_FIELD("ty", translation.y)
+			else TRY_TRANSFER_FIELD("tz", translation.z)
+
+			return target;
+		}
+
 		case Variant::AABB: {
 			SETUP_TYPE(AABB)
 

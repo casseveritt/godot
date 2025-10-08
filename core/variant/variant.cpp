@@ -97,6 +97,9 @@ String Variant::get_type_name(Variant::Type p_type) {
 		case QUATERNION: {
 			return "Quaternion";
 		}
+		case POSE: {
+			return "Pose";
+		}
 		case BASIS: {
 			return "Basis";
 		}
@@ -332,6 +335,15 @@ bool Variant::can_convert(Variant::Type p_type_from, Variant::Type p_type_to) {
 			valid_types = valid;
 
 		} break;
+		case POSE: {
+			static const Type valid[] = {
+				TRANSFORM3D,
+				NIL
+			};
+
+			valid_types = valid;
+
+		} break;
 		case BASIS: {
 			static const Type valid[] = {
 				QUATERNION,
@@ -345,6 +357,7 @@ bool Variant::can_convert(Variant::Type p_type_from, Variant::Type p_type_to) {
 			static const Type valid[] = {
 				TRANSFORM2D,
 				QUATERNION,
+				POSE,
 				BASIS,
 				PROJECTION,
 				NIL
@@ -675,6 +688,14 @@ bool Variant::can_convert_strict(Variant::Type p_type_from, Variant::Type p_type
 			valid_types = valid;
 
 		} break;
+		case POSE: {
+			static const Type valid[] = {
+				NIL
+			};
+
+			valid_types = valid;
+
+		} break;
 		case BASIS: {
 			static const Type valid[] = {
 				QUATERNION,
@@ -688,6 +709,7 @@ bool Variant::can_convert_strict(Variant::Type p_type_from, Variant::Type p_type
 			static const Type valid[] = {
 				TRANSFORM2D,
 				QUATERNION,
+				POSE,
 				BASIS,
 				PROJECTION,
 				NIL
@@ -942,6 +964,9 @@ bool Variant::is_zero() const {
 		}
 		case QUATERNION: {
 			return *reinterpret_cast<const Quaternion *>(_data._mem) == Quaternion();
+		}
+		case POSE: {
+			return *_data._pose == Pose();
 		}
 		case BASIS: {
 			return *_data._basis == Basis();
@@ -1205,6 +1230,10 @@ void Variant::reference(const Variant &p_variant) {
 		case QUATERNION: {
 			memnew_placement(_data._mem, Quaternion(*reinterpret_cast<const Quaternion *>(p_variant._data._mem)));
 		} break;
+		case POSE: {
+			_data._pose = (Pose *)Pools::_bucket_medium.alloc();
+			memnew_placement(_data._pose, Pose(*p_variant._data._pose));
+		} break;
 		case BASIS: {
 			_data._basis = (Basis *)Pools::_bucket_medium.alloc();
 			memnew_placement(_data._basis, Basis(*p_variant._data._basis));
@@ -1401,6 +1430,13 @@ void Variant::_clear_internal() {
 				_data._basis->~Basis();
 				Pools::_bucket_medium.free((Pools::BucketMedium *)_data._basis);
 				_data._basis = nullptr;
+			}
+		} break;
+		case POSE: {
+			if (_data._pose) {
+				_data._pose->~Pose();
+				Pools::_bucket_medium.free((Pools::BucketMedium *)_data._pose);
+				_data._pose = nullptr;
 			}
 		} break;
 		case TRANSFORM3D: {
@@ -1633,6 +1669,8 @@ String Variant::stringify(int recursion_count) const {
 			return String(operator ::AABB());
 		case QUATERNION:
 			return String(operator Quaternion());
+		case POSE:
+			return String(operator Pose());
 		case BASIS:
 			return String(operator Basis());
 		case TRANSFORM3D:
@@ -1914,6 +1952,16 @@ Variant::operator Quaternion() const {
 	}
 }
 
+Variant::operator Pose() const {
+	if (type == POSE) {
+		return *_data._pose;
+	} else if (type == TRANSFORM3D) {
+		return Pose(_data._transform3d->basis, _data._transform3d->origin);
+	} else {
+		return Pose();
+	}
+}
+
 Variant::operator Transform3D() const {
 	if (type == TRANSFORM3D) {
 		return *_data._transform3d;
@@ -1921,6 +1969,8 @@ Variant::operator Transform3D() const {
 		return Transform3D(*_data._basis, Vector3());
 	} else if (type == QUATERNION) {
 		return Transform3D(Basis(*reinterpret_cast<const Quaternion *>(_data._mem)), Vector3());
+	} else if (type == POSE) {
+		return Transform3D(Basis(_data._pose->rotation), _data._pose->translation);
 	} else if (type == TRANSFORM2D) {
 		const Transform2D &t = *_data._transform2d;
 		Transform3D m;
@@ -2461,6 +2511,12 @@ Variant::Variant(const Quaternion &p_quaternion) :
 	static_assert(sizeof(Quaternion) <= sizeof(_data._mem));
 }
 
+Variant::Variant(const Pose &p_pose) :
+		type(POSE) {
+	_data._pose = (Pose *)Pools::_bucket_medium.alloc();
+	memnew_placement(_data._pose, Pose(p_pose));
+}
+
 Variant::Variant(const Transform3D &p_transform) :
 		type(TRANSFORM3D) {
 	_data._transform3d = (Transform3D *)Pools::_bucket_medium.alloc();
@@ -2875,6 +2931,18 @@ uint32_t Variant::recursive_hash(int recursion_count) const {
 			h = hash_murmur3_one_real(q.w, h);
 			return hash_fmix32(h);
 		} break;
+		case POSE: {
+			uint32_t h = HASH_MURMUR3_SEED;
+			const Pose &p = *_data._pose;
+			h = hash_murmur3_one_real(p.rotation.x, h);
+			h = hash_murmur3_one_real(p.rotation.y, h);
+			h = hash_murmur3_one_real(p.rotation.z, h);
+			h = hash_murmur3_one_real(p.rotation.w, h);
+			h = hash_murmur3_one_real(p.translation.x, h);
+			h = hash_murmur3_one_real(p.translation.y, h);
+			h = hash_murmur3_one_real(p.translation.z, h);
+			return hash_fmix32(h);
+		} break;
 		case BASIS: {
 			uint32_t h = HASH_MURMUR3_SEED;
 			const Basis &b = *_data._basis;
@@ -3265,6 +3333,13 @@ bool Variant::hash_compare(const Variant &p_variant, int recursion_count, bool s
 			const Quaternion *r = reinterpret_cast<const Quaternion *>(p_variant._data._mem);
 
 			return hash_compare_quaternion(*l, *r);
+		} break;
+
+		case POSE: {
+			const Pose *l = _data._pose;
+			const Pose *r = p_variant._data._pose;
+
+			return l->is_same(*r);
 		} break;
 
 		case BASIS: {

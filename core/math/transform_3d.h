@@ -33,6 +33,7 @@
 #include "core/math/aabb.h"
 #include "core/math/basis.h"
 #include "core/math/plane.h"
+#include "core/math/pose.h"
 #include "core/templates/vector.h"
 
 struct [[nodiscard]] Transform3D {
@@ -72,6 +73,9 @@ struct [[nodiscard]] Transform3D {
 
 	const Vector3 &get_origin() const { return origin; }
 	void set_origin(const Vector3 &p_origin) { origin = p_origin; }
+
+	const Pose get_pose() const { return Pose(basis.get_rotation_quaternion(), origin); }
+	void set_pose(const Pose &p_pose) { basis = Basis(p_pose.rotation); origin = p_pose.translation; }
 
 	void orthonormalize();
 	Transform3D orthonormalized() const;
@@ -129,6 +133,9 @@ struct [[nodiscard]] Transform3D {
 	explicit operator String() const;
 
 	Transform3D() = default;
+	Transform3D(const Pose &p_pose) :
+			basis(p_pose.rotation),
+			origin(p_pose.translation) {}
 	constexpr Transform3D(const Basis &p_basis, const Vector3 &p_origin = Vector3()) :
 			basis(p_basis),
 			origin(p_origin) {}

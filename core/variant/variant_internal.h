@@ -63,6 +63,9 @@ public:
 			case Variant::QUATERNION:
 				init_quaternion(v);
 				break;
+			case Variant::POSE:
+				init_pose(v);
+				break;
 			case Variant::AABB:
 				init_aabb(v);
 				break;
@@ -167,6 +170,8 @@ public:
 	_FORCE_INLINE_ static const Plane *get_plane(const Variant *v) { return reinterpret_cast<const Plane *>(v->_data._mem); }
 	_FORCE_INLINE_ static Quaternion *get_quaternion(Variant *v) { return reinterpret_cast<Quaternion *>(v->_data._mem); }
 	_FORCE_INLINE_ static const Quaternion *get_quaternion(const Variant *v) { return reinterpret_cast<const Quaternion *>(v->_data._mem); }
+	_FORCE_INLINE_ static Pose *get_pose(Variant *v) { return v->_data._pose; }
+	_FORCE_INLINE_ static const Pose *get_pose(const Variant *v) { return v->_data._pose; }
 	_FORCE_INLINE_ static ::AABB *get_aabb(Variant *v) { return v->_data._aabb; }
 	_FORCE_INLINE_ static const ::AABB *get_aabb(const Variant *v) { return v->_data._aabb; }
 	_FORCE_INLINE_ static Basis *get_basis(Variant *v) { return v->_data._basis; }
@@ -242,6 +247,11 @@ public:
 	_FORCE_INLINE_ static void init_quaternion(Variant *v) {
 		memnew_placement(v->_data._mem, Quaternion);
 		v->type = Variant::QUATERNION;
+	}
+	_FORCE_INLINE_ static void init_pose(Variant *v) {
+		v->_data._pose = (Pose *)Variant::Pools::_bucket_medium.alloc();
+		memnew_placement(v->_data._pose, Pose);
+		v->type = Variant::POSE;
 	}
 	_FORCE_INLINE_ static void init_aabb(Variant *v) {
 		v->_data._aabb = (AABB *)Variant::Pools::_bucket_small.alloc();
@@ -404,6 +414,8 @@ public:
 				return get_transform2d(v);
 			case Variant::QUATERNION:
 				return get_quaternion(v);
+			case Variant::POSE:
+				return get_pose(v);
 			case Variant::PLANE:
 				return get_plane(v);
 			case Variant::BASIS:
@@ -490,6 +502,8 @@ public:
 				return get_transform2d(v);
 			case Variant::QUATERNION:
 				return get_quaternion(v);
+			case Variant::POSE:
+				return get_pose(v);
 			case Variant::PLANE:
 				return get_plane(v);
 			case Variant::BASIS:
@@ -687,6 +701,8 @@ struct VariantInternalAccessor<Plane> : _VariantInternalAccessorLocal<Plane> {};
 template <>
 struct VariantInternalAccessor<Quaternion> : _VariantInternalAccessorLocal<Quaternion> {};
 
+template <> struct VariantInternalAccessor<Pose> : _VariantInternalAccessorElsewhere<Pose> {};
+
 template <>
 struct VariantInternalAccessor<::AABB> : _VariantInternalAccessorElsewhere<::AABB> {};
 
@@ -810,6 +826,11 @@ struct VariantInitializer<AABB> {
 template <>
 struct VariantInitializer<Basis> {
 	static _FORCE_INLINE_ void init(Variant *v) { VariantInternal::init_basis(v); }
+};
+
+template <>
+struct VariantInitializer<Pose> {
+	static _FORCE_INLINE_ void init(Variant *v) { VariantInternal::init_pose(v); }
 };
 
 template <>

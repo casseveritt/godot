@@ -383,6 +383,7 @@ void (*type_init_function_table[])(Variant *) = {
 		&&OPCODE_TYPE_ADJUST_VECTOR4I,                   \
 		&&OPCODE_TYPE_ADJUST_PLANE,                      \
 		&&OPCODE_TYPE_ADJUST_QUATERNION,                 \
+		&&OPCODE_TYPE_ADJUST_POSE,                       \
 		&&OPCODE_TYPE_ADJUST_AABB,                       \
 		&&OPCODE_TYPE_ADJUST_BASIS,                      \
 		&&OPCODE_TYPE_ADJUST_TRANSFORM3D,                \
@@ -3813,6 +3814,7 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 			OPCODE_TYPE_ADJUST(VECTOR4I, Vector4i);
 			OPCODE_TYPE_ADJUST(PLANE, Plane);
 			OPCODE_TYPE_ADJUST(QUATERNION, Quaternion);
+			OPCODE_TYPE_ADJUST(POSE, Pose);
 			OPCODE_TYPE_ADJUST(AABB, AABB);
 			OPCODE_TYPE_ADJUST(BASIS, Basis);
 			OPCODE_TYPE_ADJUST(TRANSFORM3D, Transform3D);

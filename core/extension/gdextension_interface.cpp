@@ -588,6 +588,8 @@ static GDExtensionVariantFromTypeConstructorFunc gdextension_get_variant_from_ty
 			return VariantTypeConstructor<Plane>::variant_from_type;
 		case GDEXTENSION_VARIANT_TYPE_QUATERNION:
 			return VariantTypeConstructor<Quaternion>::variant_from_type;
+		case GDEXTENSION_VARIANT_TYPE_POSE:
+			return VariantTypeConstructor<Pose>::variant_from_type;
 		case GDEXTENSION_VARIANT_TYPE_AABB:
 			return VariantTypeConstructor<AABB>::variant_from_type;
 		case GDEXTENSION_VARIANT_TYPE_BASIS:
@@ -673,6 +675,8 @@ static GDExtensionTypeFromVariantConstructorFunc gdextension_get_variant_to_type
 			return VariantTypeConstructor<Plane>::type_from_variant;
 		case GDEXTENSION_VARIANT_TYPE_QUATERNION:
 			return VariantTypeConstructor<Quaternion>::type_from_variant;
+		case GDEXTENSION_VARIANT_TYPE_POSE:
+			return VariantTypeConstructor<Pose>::type_from_variant;
 		case GDEXTENSION_VARIANT_TYPE_AABB:
 			return VariantTypeConstructor<AABB>::type_from_variant;
 		case GDEXTENSION_VARIANT_TYPE_BASIS:
@@ -758,6 +762,8 @@ static GDExtensionVariantGetInternalPtrFunc gdextension_variant_get_ptr_internal
 			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Plane *(*)(Variant *)>(VariantInternal::get_plane));
 		case GDEXTENSION_VARIANT_TYPE_QUATERNION:
 			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Quaternion *(*)(Variant *)>(VariantInternal::get_quaternion));
+		case GDEXTENSION_VARIANT_TYPE_POSE:
+			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Pose *(*)(Variant *)>(VariantInternal::get_pose));
 		case GDEXTENSION_VARIANT_TYPE_AABB:
 			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<AABB *(*)(Variant *)>(VariantInternal::get_aabb));
 		case GDEXTENSION_VARIANT_TYPE_BASIS:

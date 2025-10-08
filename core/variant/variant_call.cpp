@@ -2228,6 +2228,14 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Quaternion, get_axis, sarray(), varray());
 	bind_method(Quaternion, get_angle, sarray(), varray());
 
+  /* Pose */
+
+	bind_method(Pose, is_equal_approx, sarray("to"), varray());
+	bind_method(Pose, is_same, sarray("to"), varray());
+	bind_method(Pose, is_finite, sarray(), varray());
+	bind_method(Pose, is_valid, sarray(), varray());
+	bind_method(Pose, inverse, sarray(), varray());
+
 	/* Color */
 
 	bind_method(Color, to_argb32, sarray(), varray());
@@ -2415,6 +2423,7 @@ static void _register_variant_builtin_methods_misc() {
 	bind_method(Transform3D, interpolate_with, sarray("xform", "weight"), varray());
 	bind_method(Transform3D, is_equal_approx, sarray("xform"), varray());
 	bind_method(Transform3D, is_finite, sarray(), varray());
+	bind_method(Transform3D, get_pose, sarray(), varray());
 
 	/* Projection */
 
@@ -2962,6 +2971,8 @@ static void _register_variant_builtin_constants() {
 	_VariantCall::add_variant_constant(Variant::PLANE, "PLANE_XY", Plane::PLANE_XY);
 
 	_VariantCall::add_variant_constant(Variant::QUATERNION, "IDENTITY", Quaternion());
+
+	_VariantCall::add_variant_constant(Variant::POSE, "IDENTITY", Pose());
 
 	_VariantCall::add_enum_constant(Variant::PROJECTION, "Planes", "PLANE_NEAR", Projection::PLANE_NEAR);
 	_VariantCall::add_enum_constant(Variant::PROJECTION, "Planes", "PLANE_FAR", Projection::PLANE_FAR);

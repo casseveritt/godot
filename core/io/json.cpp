@@ -747,6 +747,11 @@ Variant JSON::_from_native(const Variant &p_variant, bool p_full_objects, int p_
 			Array args = { q.x, q.y, q.z, q.w };
 			RETURN_ARGS;
 		} break;
+		case Variant::POSE: {
+			const Pose p = p_variant;
+			Array args = { p.rotation.x, p.rotation.y, p.rotation.z, p.rotation.w, p.translation.x, p.translation.y, p.translation.z };
+			RETURN_ARGS;
+		} break;
 		case Variant::AABB: {
 			const AABB aabb = p_variant;
 			Array args = { aabb.position.x, aabb.position.y, aabb.position.z, aabb.size.x, aabb.size.y, aabb.size.z };
@@ -1226,6 +1231,20 @@ Variant JSON::_to_native(const Variant &p_json, bool p_allow_objects, int p_dept
 					q.w = args[3];
 
 					return q;
+				} break;
+				case Variant::POSE: {
+					LOAD_ARGS_CHECK_SIZE(7);
+
+					Pose p;
+					p.rotation.x = args[0];
+					p.rotation.y = args[1];
+					p.rotation.z = args[2];
+					p.rotation.w = args[3];
+					p.translation.x = args[4];
+					p.translation.y = args[5];
+					p.translation.z = args[6];
+
+					return p;
 				} break;
 				case Variant::AABB: {
 					LOAD_ARGS_CHECK_SIZE(6);

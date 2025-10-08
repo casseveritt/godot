@@ -493,6 +493,38 @@ Error decode_variant(Variant &r_variant, const uint8_t *p_buffer, int p_len, int
 			r_variant = val;
 
 		} break;
+		case Variant::POSE: {
+			Pose val;
+			if (header & HEADER_DATA_FLAG_64) {
+				ERR_FAIL_COND_V((size_t)len < sizeof(double) * 7, ERR_INVALID_DATA);
+				val.rotation.x = decode_double(&buf[0]);
+				val.rotation.y = decode_double(&buf[sizeof(double)]);
+				val.rotation.z = decode_double(&buf[sizeof(double) * 2]);
+				val.rotation.w = decode_double(&buf[sizeof(double) * 3]);
+				val.translation.x = decode_double(&buf[sizeof(double) * 4]);
+				val.translation.y = decode_double(&buf[sizeof(double) * 5]);
+				val.translation.z = decode_double(&buf[sizeof(double) * 6]);
+
+				if (r_len) {
+					(*r_len) += sizeof(double) * 7;
+				}
+			} else {
+				ERR_FAIL_COND_V((size_t)len < sizeof(float) * 7, ERR_INVALID_DATA);
+				val.rotation.x = decode_float(&buf[0]);
+				val.rotation.y = decode_float(&buf[sizeof(float)]);
+				val.rotation.z = decode_float(&buf[sizeof(float) * 2]);
+				val.rotation.w = decode_float(&buf[sizeof(float) * 3]);
+				val.translation.x = decode_float(&buf[sizeof(float) * 4]);
+				val.translation.y = decode_float(&buf[sizeof(float) * 5]);
+				val.translation.z = decode_float(&buf[sizeof(float) * 6]);
+
+				if (r_len) {
+					(*r_len) += sizeof(float) * 7;
+				}
+			}
+			r_variant = val;
+
+		} break;
 		case Variant::AABB: {
 			AABB val;
 			if (header & HEADER_DATA_FLAG_64) {
@@ -1416,6 +1448,7 @@ Error encode_variant(const Variant &p_variant, uint8_t *r_buffer, int &r_len, bo
 		case Variant::TRANSFORM3D:
 		case Variant::PROJECTION:
 		case Variant::QUATERNION:
+		case Variant::POSE:
 		case Variant::PLANE:
 		case Variant::BASIS:
 		case Variant::RECT2:
@@ -1656,6 +1689,21 @@ Error encode_variant(const Variant &p_variant, uint8_t *r_buffer, int &r_len, bo
 			}
 
 			r_len += 4 * sizeof(real_t);
+
+		} break;
+		case Variant::POSE: {
+			if (buf) {
+				Pose p = p_variant;
+				encode_real(p.rotation.x, &buf[0]);
+				encode_real(p.rotation.y, &buf[sizeof(real_t)]);
+				encode_real(p.rotation.z, &buf[sizeof(real_t) * 2]);
+				encode_real(p.rotation.w, &buf[sizeof(real_t) * 3]);
+				encode_real(p.translation.x, &buf[sizeof(real_t) * 4]);
+				encode_real(p.translation.y, &buf[sizeof(real_t) * 5]);
+				encode_real(p.translation.z, &buf[sizeof(real_t) * 6]);
+			}
+
+			r_len += 7 * sizeof(real_t);
 
 		} break;
 		case Variant::AABB: {
