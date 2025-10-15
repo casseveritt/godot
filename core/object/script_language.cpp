@@ -586,6 +586,7 @@ void ScriptLanguage::get_core_type_words(List<String> *p_core_type_words) const 
 	p_core_type_words->push_back("Vector4i");
 	p_core_type_words->push_back("Plane");
 	p_core_type_words->push_back("Quaternion");
+	p_core_type_words->push_back("Pose");
 	p_core_type_words->push_back("AABB");
 	p_core_type_words->push_back("Basis");
 	p_core_type_words->push_back("Transform3D");

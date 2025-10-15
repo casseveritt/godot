@@ -244,6 +244,7 @@ struct GetTypeInfo<TypedDictionary<K, V>> {
 	MAKE_TYPED_DICTIONARY_EXPANDED(m_type, m_variant_type, Transform2D, Variant::TRANSFORM2D)                 \
 	MAKE_TYPED_DICTIONARY_EXPANDED(m_type, m_variant_type, Plane, Variant::PLANE)                             \
 	MAKE_TYPED_DICTIONARY_EXPANDED(m_type, m_variant_type, Quaternion, Variant::QUATERNION)                   \
+	MAKE_TYPED_DICTIONARY_EXPANDED(m_type, m_variant_type, Pose, Variant::POSE)                               \
 	MAKE_TYPED_DICTIONARY_EXPANDED(m_type, m_variant_type, AABB, Variant::AABB)                               \
 	MAKE_TYPED_DICTIONARY_EXPANDED(m_type, m_variant_type, Basis, Variant::BASIS)                             \
 	MAKE_TYPED_DICTIONARY_EXPANDED(m_type, m_variant_type, Transform3D, Variant::TRANSFORM3D)                 \
@@ -293,6 +294,7 @@ MAKE_TYPED_DICTIONARY(Vector3i, Variant::VECTOR3I)
 MAKE_TYPED_DICTIONARY(Transform2D, Variant::TRANSFORM2D)
 MAKE_TYPED_DICTIONARY(Plane, Variant::PLANE)
 MAKE_TYPED_DICTIONARY(Quaternion, Variant::QUATERNION)
+MAKE_TYPED_DICTIONARY(Pose, Variant::POSE)
 MAKE_TYPED_DICTIONARY(AABB, Variant::AABB)
 MAKE_TYPED_DICTIONARY(Basis, Variant::BASIS)
 MAKE_TYPED_DICTIONARY(Transform3D, Variant::TRANSFORM3D)

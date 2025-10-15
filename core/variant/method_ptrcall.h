@@ -195,6 +195,8 @@ struct PtrToArg<Plane> : Internal::PtrToArgByReference<Plane> {};
 template <>
 struct PtrToArg<Quaternion> : Internal::PtrToArgDirect<Quaternion> {};
 template <>
+struct PtrToArg<Pose> : Internal::PtrToArgDirect<Pose> {};
+template <>
 struct PtrToArg<AABB> : Internal::PtrToArgByReference<AABB> {};
 template <>
 struct PtrToArg<Basis> : Internal::PtrToArgByReference<Basis> {};

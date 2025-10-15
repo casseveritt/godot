@@ -117,6 +117,9 @@ void register_named_setters_getters() {
 	REGISTER_MEMBER(Quaternion, z);
 	REGISTER_MEMBER(Quaternion, w);
 
+	REGISTER_MEMBER(Pose, rotation);
+	REGISTER_MEMBER(Pose, translation);
+
 	REGISTER_MEMBER(Basis, x);
 	REGISTER_MEMBER(Basis, y);
 	REGISTER_MEMBER(Basis, z);

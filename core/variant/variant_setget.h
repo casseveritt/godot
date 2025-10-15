@@ -329,6 +329,9 @@ SETGET_NUMBER_STRUCT(Quaternion, double, y)
 SETGET_NUMBER_STRUCT(Quaternion, double, z)
 SETGET_NUMBER_STRUCT(Quaternion, double, w)
 
+SETGET_STRUCT(Pose, Quaternion, rotation)
+SETGET_STRUCT(Pose, Vector3, translation)
+
 SETGET_STRUCT_FUNC_INDEX(Basis, Vector3, x, set_column, get_column, 0)
 SETGET_STRUCT_FUNC_INDEX(Basis, Vector3, y, set_column, get_column, 1)
 SETGET_STRUCT_FUNC_INDEX(Basis, Vector3, z, set_column, get_column, 2)

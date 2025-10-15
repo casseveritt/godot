@@ -175,6 +175,7 @@ Dictionary GDExtensionAPIDump::generate_extension_api(bool p_include_docs) {
 			{ Variant::VECTOR4I, 4 * sizeof(int32_t), 4 * sizeof(int32_t), 4 * sizeof(int32_t), 4 * sizeof(int32_t) },
 			{ Variant::PLANE, (vec3_elems + 1) * sizeof(float), (vec3_elems + 1) * sizeof(float), (vec3_elems + 1) * sizeof(double), (vec3_elems + 1) * sizeof(double) },
 			{ Variant::QUATERNION, 4 * sizeof(float), 4 * sizeof(float), 4 * sizeof(double), 4 * sizeof(double) },
+			{ Variant::POSE, 7 * sizeof(float), 7 * sizeof(float), 7 * sizeof(double), 7 * sizeof(double) },			
 			{ Variant::AABB, (vec3_elems * 2) * sizeof(float), (vec3_elems * 2) * sizeof(float), (vec3_elems * 2) * sizeof(double), (vec3_elems * 2) * sizeof(double) },
 			{ Variant::BASIS, (vec3_elems * 3) * sizeof(float), (vec3_elems * 3) * sizeof(float), (vec3_elems * 3) * sizeof(double), (vec3_elems * 3) * sizeof(double) },
 			{ Variant::TRANSFORM3D, (vec3_elems * 4) * sizeof(float), (vec3_elems * 4) * sizeof(float), (vec3_elems * 4) * sizeof(double), (vec3_elems * 4) * sizeof(double) },
@@ -217,6 +218,7 @@ Dictionary GDExtensionAPIDump::generate_extension_api(bool p_include_docs) {
 		static_assert(type_size_array[Variant::VECTOR4I][sizeof(void *)] == sizeof(Vector4i), "Size of Vector4i mismatch");
 		static_assert(type_size_array[Variant::PLANE][sizeof(void *)] == sizeof(Plane), "Size of Plane mismatch");
 		static_assert(type_size_array[Variant::QUATERNION][sizeof(void *)] == sizeof(Quaternion), "Size of Quaternion mismatch");
+		static_assert(type_size_array[Variant::POSE][sizeof(void *)] == sizeof(Pose), "Size of Pose mismatch");		
 		static_assert(type_size_array[Variant::AABB][sizeof(void *)] == sizeof(AABB), "Size of AABB mismatch");
 		static_assert(type_size_array[Variant::BASIS][sizeof(void *)] == sizeof(Basis), "Size of Basis mismatch");
 		static_assert(type_size_array[Variant::TRANSFORM3D][sizeof(void *)] == sizeof(Transform3D), "Size of Transform3D mismatch");

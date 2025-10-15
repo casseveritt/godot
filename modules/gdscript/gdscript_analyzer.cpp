@@ -4950,6 +4950,7 @@ void GDScriptAnalyzer::reduce_subscript(GDScriptParser::SubscriptNode *p_subscri
 							case Variant::RECT2I:
 							case Variant::PLANE:
 							case Variant::QUATERNION:
+							case Variant::POSE:
 							case Variant::AABB:
 							case Variant::OBJECT:
 								error = index_type.builtin_type != Variant::STRING && index_type.builtin_type != Variant::STRING_NAME;
@@ -5069,6 +5070,7 @@ void GDScriptAnalyzer::reduce_subscript(GDScriptParser::SubscriptNode *p_subscri
 					case Variant::VECTOR3:
 					case Variant::VECTOR4:
 					case Variant::QUATERNION:
+					case Variant::POSE:
 						result_type.builtin_type = Variant::FLOAT;
 						break;
 					// Return String.

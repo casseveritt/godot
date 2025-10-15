@@ -335,6 +335,9 @@ void Variant::_register_variant_operators() {
 	register_op<OperatorEvaluatorMul<Quaternion, Quaternion, int64_t>>(Variant::OP_MULTIPLY, Variant::QUATERNION, Variant::INT);
 	register_op<OperatorEvaluatorMul<Quaternion, Quaternion, double>>(Variant::OP_MULTIPLY, Variant::QUATERNION, Variant::FLOAT);
 
+	register_op<OperatorEvaluatorMul<Pose, Pose, Pose>>(Variant::OP_MULTIPLY, Variant::POSE, Variant::POSE);
+	register_op<OperatorEvaluatorMul<Vector3, Pose, Vector3>>(Variant::OP_MULTIPLY, Variant::POSE, Variant::VECTOR3);
+
 	register_op<OperatorEvaluatorMul<Color, Color, Color>>(Variant::OP_MULTIPLY, Variant::COLOR, Variant::COLOR);
 	register_op<OperatorEvaluatorMul<Color, Color, int64_t>>(Variant::OP_MULTIPLY, Variant::COLOR, Variant::INT);
 	register_op<OperatorEvaluatorMul<Color, Color, double>>(Variant::OP_MULTIPLY, Variant::COLOR, Variant::FLOAT);

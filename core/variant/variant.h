@@ -38,8 +38,10 @@
 #include "core/math/color.h"
 #include "core/math/face3.h"
 #include "core/math/plane.h"
+#include "core/math/pose.h"
 #include "core/math/projection.h"
 #include "core/math/quaternion.h"
+#include "core/math/pose.h"
 #include "core/math/rect2.h"
 #include "core/math/rect2i.h"
 #include "core/math/transform_2d.h"
@@ -110,6 +112,7 @@ public:
 		VECTOR4I,
 		PLANE,
 		QUATERNION,
+		POSE,
 		AABB,
 		BASIS,
 		TRANSFORM3D,
@@ -157,6 +160,7 @@ private:
 		union BucketMedium {
 			BucketMedium() {}
 			~BucketMedium() {}
+			Pose _pose;
 			Basis _basis;
 			Transform3D _transform3d;
 		};
@@ -272,6 +276,7 @@ private:
 		int64_t _int;
 		double _float;
 		Transform2D *_transform2d;
+		Pose *_pose;
 		::AABB *_aabb;
 		Basis *_basis;
 		Transform3D *_transform3d;
@@ -302,6 +307,7 @@ private:
 		false, //VECTOR4I,
 		false, //PLANE,
 		false, //QUATERNION,
+		false, //POSE,
 		true, //AABB,
 		true, //BASIS,
 		true, //TRANSFORM,
@@ -455,6 +461,7 @@ public:
 	operator Plane() const;
 	operator ::AABB() const;
 	operator Quaternion() const;
+	operator Pose() const;
 	operator Basis() const;
 	operator Transform2D() const;
 	operator Transform3D() const;
@@ -526,6 +533,7 @@ public:
 	Variant(const Plane &p_plane);
 	Variant(const ::AABB &p_aabb);
 	Variant(const Quaternion &p_quat);
+	Variant(const Pose &p_pose);
 	Variant(const Basis &p_matrix);
 	Variant(const Transform2D &p_transform);
 	Variant(const Transform3D &p_transform);

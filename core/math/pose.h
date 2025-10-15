@@ -45,8 +45,9 @@ struct [[nodiscard]] Pose {
 	bool is_valid() const;
 	Pose inverse() const;
 
-	constexpr void operator*=(const Pose &p_p);
-	constexpr Pose operator*(const Pose &p_p) const;
+	void operator*=(const Pose &p_p);
+	Pose operator*(const Pose &p_p) const;
+	Vector3 operator*(const Vector3 &p_v) const;
 
 	_FORCE_INLINE_ Vector3 xform(const Vector3 &p_v) const {
 		return translation + rotation.xform(p_v);
@@ -64,11 +65,11 @@ struct [[nodiscard]] Pose {
 	constexpr Pose() :
 			rotation(), translation() {}
 
-	constexpr Pose(const Quaternion &p_r, const Vector3 &p_t) :
+	Pose(const Quaternion &p_r, const Vector3 &p_t) :
 			rotation(p_r), translation(p_t) {}
 
 
-	constexpr Quaternion(const Pose &p_p) :
+	constexpr Pose(const Pose &p_p) :
 			rotation(p_p.rotation), translation(p_p.translation) {}
 
 	constexpr void operator=(const Pose &p_p) {
@@ -77,16 +78,20 @@ struct [[nodiscard]] Pose {
 	}
 };
 
-_FORCE_INLINE_ bool Pose::is_equal_approx(const pose &p_pose) const {
+_FORCE_INLINE_ bool Pose::is_equal_approx(const Pose &p_pose) const {
 	return rotation.is_equal_approx(p_pose.rotation) && translation.is_equal_approx(p_pose.translation);
 }
 
-_FORCE_INLINE_ bool Pose::is_same(const pose &p_pose) const {
+_FORCE_INLINE_ bool Pose::is_same(const Pose &p_pose) const {
 	return rotation == p_pose.rotation && translation == p_pose.translation;
 }
 
 _FORCE_INLINE_ bool Pose::is_finite() const {
 	return rotation.is_finite() && translation.is_finite();
+}
+
+_FORCE_INLINE_ bool Pose::is_valid() const {
+	return abs(rotation.length_squared() - 1.0f) < 0.1f  && translation.is_finite();
 }
 
 _FORCE_INLINE_ Pose Pose::inverse() const {
@@ -106,13 +111,17 @@ constexpr bool Pose::operator!=(const Pose &p_pose) const {
 	return rotation != p_pose.rotation || translation != p_pose.translation;
 }
 
-constexpr void Pose::operator*=(const Pose &p_p) {
+_FORCE_INLINE_ void Pose::operator*=(const Pose &p_p) {
 	translation = xform(p_p.translation);
 	rotation *= p_p.rotation;
 }
 
-constexpr Pose Pose::operator*(const Pose &p_p) const {
+_FORCE_INLINE_ Pose Pose::operator*(const Pose &p_p) const {
 	Pose p = *this;
 	p *= p_p;
 	return p;
+}
+
+_FORCE_INLINE_ Vector3 Pose::operator*(const Vector3 &p_v) const {
+	return xform(p_v);
 }
